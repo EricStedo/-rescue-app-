@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescue - Gestion du Stress</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .sos-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sos-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .sos-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
+        }
+
+        .sos-button:active {
+            transform: scale(0.95);
+        }
+
+        .techniques-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .technique-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .technique-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .technique-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .technique-card p {
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .exercise-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .breathing-circle {
+            width: 150px;
+            height: 150px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .breathing-circle.inhale {
+            transform: scale(1.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #4ecdc4;
+        }
+
+        .breathing-circle.hold {
+            transform: scale(1.3);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #45b7d1;
+        }
+
+        .breathing-circle.exhale {
+            transform: scale(0.8);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #f39c12;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .timer-display {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #4ecdc4;
+        }
+
+        .grounding-steps {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .grounding-steps li {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            list-style: none;
+            transition: all 0.3s ease;
+        }
+
+        .grounding-steps li.active {
+            background: rgba(78, 205, 196, 0.3);
+            border-left: 4px solid #4ecdc4;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .sos-button {
+                width: 150px;
+                height: 150px;
+                font-size: 1.2em;
+            }
+            
+            .techniques-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🆘 RESCUE</h1>
+        <p>Votre soutien immédiat en cas de stress</p>
+    </div>
+
+    <div class="main-content">
+        <div class="sos-section">
+            <button class="sos-button" onclick="startSOS()">
+                SOS<br>URGENCE
+            </button>
+            <p>Appuyez en cas de crise d'anxiété</p>
+        </div>
+
+        <div class="techniques-grid">
+            <div class="technique-card" onclick="startBreathing()">
+                <h3>🫁 Respiration 4-7-8</h3>
+                <p>Technique rapide pour calmer l'anxiété en 2 minutes</p>
+            </div>
+
+            <div class="technique-card" onclick="startGrounding()">
+                <h3>🌱 Grounding 5-4-3-2-1</h3>
+                <p>Reconnectez-vous au présent avec vos 5 sens</p>
+            </div>
+
+            <div class="technique-card" onclick="startMindfulness()">
+                <h3>🧘 Méditation Express</h3>
+                <p>Retour au calme en 3 minutes chrono</p>
+            </div>
+
+            <div class="technique-card" onclick="startBodyScan()">
+                <h3>💆 Scan Corporel</h3>
+                <p>Relâchez les tensions physiques rapidement</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour les exercices -->
+    <div id="exerciseModal" class="exercise-modal">
+        <div class="modal-content">
+            <div id="modalContent"></div>
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+                <button class="btn btn-primary" onclick="stopSpeech()">🔇 Couper le son</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentExercise = null;
+        let exerciseInterval = null;
+        let exerciseTimeout = null;
+        let speechSynthesis = window.speechSynthesis;
+        let currentVoice = null;
+
+        // Initialiser la voix française
+        function initVoice() {
+            const voices = speechSynthesis.getVoices();
+            currentVoice = voices.find(voice => voice.lang.startsWith('fr')) || voices[0];
+        }
+
+        // Fonction pour parler avec voix optimisée
+        function speak(text, rate = 0.7, pitch = 0.9, volume = 0.9) {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.voice = currentVoice;
+            utterance.rate = rate; // Plus lent et naturel
+            utterance.pitch = pitch; // Légèrement plus grave
+            utterance.volume = volume;
+            
+            speechSynthesis.speak(utterance);
+        }
+
+        // Messages personnalisés optimisés
+        const personalizedMessages = {
+            sos_intro: "Mode SOS activé. Vous n'êtes pas seul dans cette épreuve. Je vais vous guider pour retrouver le calme. Respirons ensemble, étape par étape.",
+            sos_start: "Parfait. Nous allons commencer par une respiration profonde et contrôlée. Suivez mon rythme, tout va bien se passer.",
+            sos_inhale: "Inspirez... profondément... par le nez... sentez l'air qui entre.",
+            sos_hold: "Retenez... gardez l'air... vous maîtrisez votre respiration.",
+            sos_exhale: "Expirez... lentement... par la bouche... relâchez toute la tension.",
+            sos_end: "Excellent travail ! Vous avez retrouvé votre calme. Cette sensation difficile est passée. Vous pouvez recommencer cet exercice à tout moment.",
+            
+            breathing_intro: "Nous allons pratiquer la respiration quatre-sept-huit. Cette technique ancestrale va calmer votre système nerveux en quelques minutes.",
+            breathing_start: "Installez-vous confortablement. Nous allons respirer ensemble selon un rythme précis : quatre secondes d'inspiration, sept secondes de rétention, huit secondes d'expiration.",
+            breathing_inhale: "Inspirez... quatre secondes... remplissez vos poumons.",
+            breathing_hold: "Retenez... votre souffle... laissez l'oxygène circuler.",
+            breathing_exhale: "Expirez... lentement... évacuez tout le stress.",
+            breathing_end: "Magnifique ! Vous avez terminé les cinq cycles. Votre rythme cardiaque s'est apaisé, votre esprit est plus clair. Cette technique est désormais à votre disposition.",
+            
+            grounding_intro: "L'exercice cinq-quatre-trois-deux-un va vous reconnecter au moment présent. Quand notre esprit s'emballe, nos sens nous ramènent à la réalité.",
+            grounding_step1: "Première étape : regardez autour de vous et identifiez cinq choses que vous voyez. Observez les détails, les couleurs, les formes. Prenez votre temps.",
+            grounding_step2: "Deuxième étape : touchez quatre objets différents. Ressentez leur texture, leur température, leur poids. Connectez-vous à ces sensations.",
+            grounding_step3: "Troisième étape : écoutez attentivement et identifiez trois sons distincts. Peut-être des voix, des bruits de circulation, le silence même.",
+            grounding_step4: "Quatrième étape : concentrez-vous sur deux odeurs présentes dans votre environnement. Respirez et laissez ces parfums vous ancrer.",
+            grounding_step5: "Dernière étape : portez attention à un goût dans votre bouche. Même subtil, ce goût vous connecte à l'instant présent.",
+            grounding_end: "Parfait ! Vous avez terminé l'exercice d'ancrage. Votre esprit est maintenant connecté au présent, loin des pensées anxiogènes.",
+            
+            meditation_intro: "Cette méditation express de trois minutes va apaiser votre mental. Pas besoin d'être un expert, suivez simplement ma guidance.",
+            meditation_start: "Fermez les yeux si vous le souhaitez. Respirez naturellement, sans forcer. Votre seul travail est d'observer.",
+            meditation_prompt1: "Observez vos pensées qui arrivent et repartent. C'est parfaitement normal. Vous n'avez pas à les arrêter.",
+            meditation_prompt2: "Si votre attention dérive, c'est humain. Revenez simplement à votre respiration, sans vous juger.",
+            meditation_prompt3: "Vous faites un excellent travail. Continuez à respirer, à observer. Chaque instant est précieux.",
+            meditation_prompt4: "Nous arrivons bientôt au terme. Profitez de ces derniers instants de calme intérieur.",
+            meditation_end: "Bravo ! Votre méditation est terminée. Prenez quelques respirations pour revenir en douceur à votre environnement. Cette paix est toujours accessible.",
+            
+            bodyscan_intro: "Le scan corporel va relâcher toutes les tensions accumulées dans votre corps. Deux minutes pour vous libérer du stress physique.",
+            bodyscan_head: "Commençons par le haut de votre corps. Relâchez complètement votre front, détendez vos sourcils, laissez tomber vos mâchoires.",
+            bodyscan_shoulders: "Maintenant vos épaules. Laissez-les tomber, évacuez toute cette tension que vous portez. Sentez le soulagement.",
+            bodyscan_arms: "Détendez vos bras entièrement. De l'épaule jusqu'au bout des doigts. Laissez-les devenir lourds et relâchés.",
+            bodyscan_chest: "Relâchez votre poitrine. Respirez librement, sans contrainte. Votre cage thoracique s'ouvre et se détend.",
+            bodyscan_belly: "Détendez votre ventre complètement. Laissez-le se relâcher, sans le retenir. Cette détente est bienfaisante.",
+            bodyscan_legs: "Relâchez maintenant vos jambes. De la hanche jusqu'aux pieds. Sentez cette détente qui descend le long de vos membres.",
+            bodyscan_whole: "Ressentez maintenant votre corps entier, complètement détendu et relâché. Chaque muscle, chaque fibre est apaisée.",
+            bodyscan_end: "Excellent ! Votre scan corporel est terminé. Votre corps a évacué les tensions. Cette détente profonde vous appartient."
+        };
+
+        // Arrêter la voix
+        function stopSpeech() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+        }
+
+        // Initialiser les voix quand elles sont disponibles
+        speechSynthesis.onvoiceschanged = initVoice;
+        initVoice();
+
+        // Configuration des fichiers audio personnalisés
+        const audioFiles = {
+            // Mode SOS - Test WAV
+            sos_intro: 'https://raw.githubusercontent.com/EricStedo/-rescue-audio-/main/sos_intro.wav',
+            sos_start: 'https://raw.githubusercontent.com/EricStedo/-rescue-audio-/main/sos_start.mp3',
+            sos_inhale: 'https://raw.githubusercontent.com/EricStedo/-rescue-audio-/main/sos_inhale.mp3',
+            sos_hold: 'https://raw.githubusercontent.com/EricStedo/-rescue-audio-/main/sos_hold.mp3',
+            sos_exhale: 'https://raw.githubusercontent.com/EricStedo/-rescue-audio-/main/sos_exhale.mp3',
+            sos_end: 'https://raw.githubusercontent.com/EricStedo/-rescue-audio-/main/sos_end.mp3'
+        };
+
+        // Fonction pour jouer les messages personnalisés
+        function playPersonalizedAudio(messageKey) {
+            if (personalizedMessages[messageKey]) {
+                speak(personalizedMessages[messageKey], 0.7, 0.9, 0.9);
+                return true;
+            }
+            return false;
+        }
+
+        function startSOS() {
+            // Vibreur si disponible
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+            
+            // Message personnalisé optimisé
+            playPersonalizedAudio('sos_intro');
+            
+            showModal(`
+                <h2>🆘 Mode SOS Activé</h2>
+                <p>Prenez une grande respiration avec moi...</p>
+                <div class="breathing-circle" id="sosCircle">RESPIREZ</div>
+                <p>Vous n'êtes pas seul(e). Cette sensation va passer.</p>
+            `);
+            
+            setTimeout(() => {
+                startSOSBreathing();
+            }, 8000); // Délai ajusté pour le message plus long
+        }
+
+        function startSOSBreathing() {
+            const circle = document.getElementById('sosCircle');
+            let phase = 0; // 0: inhale, 1: hold, 2: exhale
+            let counter = 0;
+            let cycle = 0;
+            
+            speak("Commençons la respiration. Inspirez profondément pendant 4 secondes.", 0.8);
+            
+            exerciseInterval = setInterval(() => {
+                switch(phase) {
+                    case 0: // Inhale
+                        circle.textContent = `INSPIREZ (${4 - counter})`;
+                        circle.className = 'breathing-circle inhale';
+                        if (counter === 0) {
+                            speak("Inspirez", 0.9);
+                        }
+                        counter++;
+                        if (counter >= 4) {
+                            counter = 0;
+                            phase = 1;
+                        }
+                        break;
+                    case 1: // Hold
+                        circle.textContent = `RETENEZ (${7 - counter})`;
+                        circle.className = 'breathing-circle hold';
+                        if (counter === 0) {
+                            speak("Retenez votre souffle", 0.9);
+                        }
+                        counter++;
+                        if (counter >= 7) {
+                            counter = 0;
+                            phase = 2;
+                        }
+                        break;
+                    case 2: // Exhale
+                        circle.textContent = `EXPIREZ (${8 - counter})`;
+                        circle.className = 'breathing-circle exhale';
+                        if (counter === 0) {
+                            speak("Expirez lentement", 0.9);
+                        }
+                        counter++;
+                        if (counter >= 8) {
+                            counter = 0;
+                            phase = 0;
+                            cycle++;
+                            if (cycle >= 3) {
+                                clearInterval(exerciseInterval);
+                                circle.textContent = "✅ BIEN JOUÉ !";
+                                circle.className = 'breathing-circle';
+                                speak("Excellent. Vous avez retrouvé votre calme. Vous pouvez recommencer si nécessaire.", 0.8);
+                            }
+                        }
+                        break;
+                }
+            }, 1000);
+        }
+
+        function startBreathing() {
+            playPersonalizedAudio('breathing_intro');
+            
+            showModal(`
+                <h2>🫁 Respiration 4-7-8</h2>
+                <p>Suivez le rythme de respiration</p>
+                <div class="breathing-circle" id="breathingCircle">PRÊT ?</div>
+                <div class="timer-display" id="breathingTimer">5 cycles</div>
+            `);
+            
+            setTimeout(() => {
+                startBreathingExercise();
+            }, 6000);
+        }
+
+        function startBreathingExercise() {
+            const circle = document.getElementById('breathingCircle');
+            const timer = document.getElementById('breathingTimer');
+            let phase = 0;
+            let counter = 0;
+            let cycles = 0;
+            
+            playPersonalizedAudio('breathing_start');
+            
+            exerciseInterval = setInterval(() => {
+                switch(phase) {
+                    case 0: // Inhale
+                        circle.textContent = `INSPIREZ (${4 - counter})`;
+                        circle.className = 'breathing-circle inhale';
+                        if (counter === 0 && cycles > 0) {
+                            playPersonalizedAudio('breathing_inhale');
+                        }
+                        counter++;
+                        if (counter >= 4) {
+                            counter = 0;
+                            phase = 1;
+                        }
+                        break;
+                    case 1: // Hold
+                        circle.textContent = `RETENEZ (${7 - counter})`;
+                        circle.className = 'breathing-circle hold';
+                        if (counter === 0) {
+                            playPersonalizedAudio('breathing_hold');
+                        }
+                        counter++;
+                        if (counter >= 7) {
+                            counter = 0;
+                            phase = 2;
+                        }
+                        break;
+                    case 2: // Exhale
+                        circle.textContent = `EXPIREZ (${8 - counter})`;
+                        circle.className = 'breathing-circle exhale';
+                        if (counter === 0) {
+                            playPersonalizedAudio('breathing_exhale');
+                        }
+                        counter++;
+                        if (counter >= 8) {
+                            counter = 0;
+                            phase = 0;
+                            cycles++;
+                            timer.textContent = `${5 - cycles} cycles`;
+                            if (cycles >= 5) {
+                                clearInterval(exerciseInterval);
+                                circle.textContent = "✅ TERMINÉ !";
+                                circle.className = 'breathing-circle';
+                                timer.textContent = "Bien joué !";
+                                playPersonalizedAudio('breathing_end');
+                            }
+                        }
+                        break;
+                }
+            }, 1000);
+        }
+
+        function startGrounding() {
+            speak("Nous allons faire l'exercice de recentrage 5-4-3-2-1. Cet exercice va vous reconnecter au moment présent.", 0.8);
+            
+            showModal(`
+                <h2>🌱 Technique 5-4-3-2-1</h2>
+                <p>Reconnectez-vous au présent</p>
+                <ul class="grounding-steps">
+                    <li id="step1">5 choses que vous VOYEZ</li>
+                    <li id="step2">4 choses que vous TOUCHEZ</li>
+                    <li id="step3">3 choses que vous ENTENDEZ</li>
+                    <li id="step4">2 choses que vous SENTEZ</li>
+                    <li id="step5">1 chose que vous GOÛTEZ</li>
+                </ul>
+            `);
+            
+            setTimeout(() => {
+                startGroundingExercise();
+            }, 3000);
+        }
+
+        function startGroundingExercise() {
+            const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
+            const instructions = [
+                "Regardez autour de vous et nommez 5 choses que vous voyez. Prenez votre temps.",
+                "Maintenant, touchez 4 objets différents. Ressentez leur texture, leur température.",
+                "Écoutez attentivement. Identifiez 3 sons différents autour de vous.",
+                "Concentrez-vous sur 2 odeurs que vous pouvez sentir en ce moment.",
+                "Enfin, portez attention à 1 goût dans votre bouche."
+            ];
+            let currentStep = 0;
+            
+            function activateStep() {
+                if (currentStep < steps.length) {
+                    document.getElementById(steps[currentStep]).classList.add('active');
+                    speak(instructions[currentStep], 0.8);
+                    currentStep++;
+                    
+                    if (currentStep < steps.length) {
+                        exerciseTimeout = setTimeout(activateStep, 12000); // 12 secondes par étape
+                    } else {
+                        exerciseTimeout = setTimeout(() => {
+                            speak("Excellent ! Vous avez terminé l'exercice de recentrage. Vous devriez vous sentir plus ancré dans le présent.", 0.8);
+                        }, 8000);
+                    }
+                }
+            }
+            
+            activateStep();
+        }
+
+        function startMindfulness() {
+            speak("Nous allons faire une méditation express de 3 minutes. Installez-vous confortablement et fermez les yeux si vous le souhaitez.", 0.8);
+            
+            showModal(`
+                <h2>🧘 Méditation Express</h2>
+                <p>Concentrez-vous sur le moment présent</p>
+                <div class="breathing-circle" id="mindfulCircle">DÉTENDEZ-VOUS</div>
+                <div class="timer-display" id="mindfulTimer">3:00</div>
+            `);
+            
+            setTimeout(() => {
+                startMindfulnessTimer();
+            }, 3000);
+        }
+
+        function startMindfulnessTimer() {
+            const circle = document.getElementById('mindfulCircle');
+            const timer = document.getElementById('mindfulTimer');
+            let timeLeft = 180; // 3 minutes
+            
+            const messages = [
+                "Respirez naturellement",
+                "Observez vos pensées sans les juger",
+                "Laissez-les passer comme des nuages",
+                "Revenez doucement à votre souffle",
+                "Vous êtes en sécurité ici et maintenant"
+            ];
+            
+            const voicePrompts = [
+                "Commençons. Respirez naturellement, sans forcer.",
+                "Observez vos pensées qui vont et viennent. C'est normal.",
+                "Si votre esprit s'égare, revenez simplement à votre respiration.",
+                "Vous faites du très bon travail. Continuez à respirer.",
+                "Bientôt terminé. Profitez de ce moment de calme."
+            ];
+            
+            let promptIndex = 0;
+            
+            // Premier message vocal
+            speak(voicePrompts[0], 0.8);
+            
+            exerciseInterval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Messages visuels toutes les 30 secondes
+                if (timeLeft % 30 === 0) {
+                    circle.textContent = messages[Math.floor(Math.random() * messages.length)];
+                }
+                
+                // Messages vocaux toutes les 45 secondes
+                if (timeLeft % 45 === 0 && timeLeft > 0 && promptIndex < voicePrompts.length - 1) {
+                    promptIndex++;
+                    speak(voicePrompts[promptIndex], 0.8);
+                }
+                
+                timeLeft--;
+                
+                if (timeLeft < 0) {
+                    clearInterval(exerciseInterval);
+                    circle.textContent = "✅ TERMINÉ !";
+                    timer.textContent = "Bien joué !";
+                    speak("Parfait ! Vous avez terminé votre méditation. Prenez quelques instants pour revenir doucement à votre environnement.", 0.8);
+                }
+            }, 1000);
+        }
+
+        function startBodyScan() {
+            speak("Nous allons faire un scan corporel de 2 minutes pour relâcher toutes les tensions de votre corps.", 0.8);
+            
+            showModal(`
+                <h2>💆 Scan Corporel</h2>
+                <p>Relâchez les tensions de votre corps</p>
+                <div class="breathing-circle" id="bodyScanCircle">PRÉPAREZ-VOUS</div>
+                <div class="timer-display" id="bodyScanTimer">2:00</div>
+            `);
+            
+            setTimeout(() => {
+                startBodyScanExercise();
+            }, 3000);
+        }
+
+        function startBodyScanExercise() {
+            const circle = document.getElementById('bodyScanCircle');
+            const timer = document.getElementById('bodyScanTimer');
+            let timeLeft = 120; // 2 minutes
+            
+            const bodyParts = [
+                "Relâchez votre front",
+                "Détendez vos épaules",
+                "Relâchez vos bras",
+                "Détendez votre poitrine",
+                "Relâchez votre ventre",
+                "Détendez vos jambes",
+                "Relâchez tout votre corps"
+            ];
+            
+            const voiceInstructions = [
+                "Commençons par le haut. Relâchez complètement votre front et vos sourcils.",
+                "Maintenant, laissez tomber vos épaules. Sentez la tension qui s'évacue.",
+                "Détendez vos bras, de l'épaule jusqu'au bout des doigts.",
+                "Relâchez votre poitrine. Respirez librement.",
+                "Détendez votre ventre. Laissez-le se relâcher complètement.",
+                "Relâchez vos jambes, de la hanche jusqu'aux pieds.",
+                "Parfait. Tout votre corps est maintenant détendu et relâché."
+            ];
+            
+            let currentPart = 0;
+            speak(voiceInstructions[0], 0.8);
+            
+            exerciseInterval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft % 17 === 0 && currentPart < bodyParts.length) {
+                    circle.textContent = bodyParts[currentPart];
+                    if (currentPart > 0) {
+                        speak(voiceInstructions[currentPart], 0.8);
+                    }
+                    currentPart++;
+                }
+                
+                timeLeft--;
+                
+                if (timeLeft < 0) {
+                    clearInterval(exerciseInterval);
+                    circle.textContent = "✅ TERMINÉ !";
+                    timer.textContent = "Bien joué !";
+                    speak("Excellent ! Votre scan corporel est terminé. Votre corps devrait maintenant être plus détendu.", 0.8);
+                }
+            }, 1000);
+        }
+
+        function showModal(content) {
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('exerciseModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('exerciseModal').style.display = 'none';
+            clearInterval(exerciseInterval);
+            clearTimeout(exerciseTimeout);
+            stopSpeech(); // Arrêter la voix
+            exerciseInterval = null;
+            exerciseTimeout = null;
+        }
+
+        // Fermer la modal en cliquant à l'extérieur
+        window.onclick = function(event) {
+            const modal = document.getElementById('exerciseModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
