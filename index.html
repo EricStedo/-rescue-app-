@@ -231,7 +231,26 @@
             border-left: 4px solid #4ecdc4;
         }
 
-        @media (max-width: 768px) {
+        .pause-branding {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9em;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .pause-logo {
+            font-size: 1.2em;
+        }
             .header h1 {
                 font-size: 2em;
             }
@@ -252,6 +271,10 @@
     <div class="header">
         <h1>🆘 RESCUE</h1>
         <p>Votre soutien immédiat en cas de stress</p>
+        <div style="margin-top: 15px; padding: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; backdrop-filter: blur(5px);">
+            <div style="font-size: 1.5em; font-weight: bold; margin-bottom: 5px;">⏸️ PAUSE</div>
+            <div style="font-size: 0.9em; opacity: 0.9;">Formation & Bien-être en Entreprise</div>
+        </div>
     </div>
 
     <div class="main-content">
@@ -283,6 +306,12 @@
                 <p>Relâchez les tensions physiques rapidement</p>
             </div>
         </div>
+    </div>
+
+    <!-- Branding Pause -->
+    <div class="pause-branding">
+        <span class="pause-logo">⏸️</span>
+        <span>Développé par <strong>PAUSE</strong></span>
     </div>
 
     <!-- Modal pour les exercices -->
@@ -324,23 +353,23 @@
             speechSynthesis.speak(utterance);
         }
 
-        // Messages personnalisés optimisés
+        // Messages personnalisés optimisés avec branding Pause
         const personalizedMessages = {
-            sos_intro: "Mode SOS activé. Vous n'êtes pas seul dans cette épreuve. Je vais vous guider pour retrouver le calme. Respirons ensemble, étape par étape.",
+            sos_intro: "Mode SOS activé par Pause. Vous n'êtes pas seul dans cette épreuve. Je vais vous guider pour retrouver le calme. Respirons ensemble, étape par étape.",
             sos_start: "Parfait. Nous allons commencer par une respiration profonde et contrôlée. Suivez mon rythme, tout va bien se passer.",
             sos_inhale: "Inspirez... profondément... par le nez... sentez l'air qui entre.",
             sos_hold: "Retenez... gardez l'air... vous maîtrisez votre respiration.",
             sos_exhale: "Expirez... lentement... par la bouche... relâchez toute la tension.",
-            sos_end: "Excellent travail ! Vous avez retrouvé votre calme. Cette sensation difficile est passée. Vous pouvez recommencer cet exercice à tout moment.",
+            sos_end: "Excellent travail ! Vous avez retrouvé votre calme grâce à la méthode Pause. Cette sensation difficile est passée. Vous pouvez recommencer cet exercice à tout moment.",
             
-            breathing_intro: "Nous allons pratiquer la respiration quatre-sept-huit. Cette technique ancestrale va calmer votre système nerveux en quelques minutes.",
+            breathing_intro: "Nous allons pratiquer la respiration quatre-sept-huit, une technique enseignée par Pause. Cette méthode ancestrale va calmer votre système nerveux en quelques minutes.",
             breathing_start: "Installez-vous confortablement. Nous allons respirer ensemble selon un rythme précis : quatre secondes d'inspiration, sept secondes de rétention, huit secondes d'expiration.",
             breathing_inhale: "Inspirez... quatre secondes... remplissez vos poumons.",
             breathing_hold: "Retenez... votre souffle... laissez l'oxygène circuler.",
             breathing_exhale: "Expirez... lentement... évacuez tout le stress.",
-            breathing_end: "Magnifique ! Vous avez terminé les cinq cycles. Votre rythme cardiaque s'est apaisé, votre esprit est plus clair. Cette technique est désormais à votre disposition.",
+            breathing_end: "Magnifique ! Vous avez terminé les cinq cycles avec la méthode Pause. Votre rythme cardiaque s'est apaisé, votre esprit est plus clair. Cette technique est désormais à votre disposition.",
             
-            grounding_intro: "L'exercice cinq-quatre-trois-deux-un va vous reconnecter au moment présent. Quand notre esprit s'emballe, nos sens nous ramènent à la réalité.",
+            grounding_intro: "L'exercice cinq-quatre-trois-deux-un, développé par Pause, va vous reconnecter au moment présent. Quand notre esprit s'emballe, nos sens nous ramènent à la réalité.",
             grounding_step1: "Première étape : regardez autour de vous et identifiez cinq choses que vous voyez. Observez les détails, les couleurs, les formes. Prenez votre temps.",
             grounding_step2: "Deuxième étape : touchez quatre objets différents. Ressentez leur texture, leur température, leur poids. Connectez-vous à ces sensations.",
             grounding_step3: "Troisième étape : écoutez attentivement et identifiez trois sons distincts. Peut-être des voix, des bruits de circulation, le silence même.",
